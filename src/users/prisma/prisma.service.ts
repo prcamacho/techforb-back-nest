@@ -48,4 +48,118 @@ export class PrismaService {
       },
     });
   }
+  async getAlertSeverity(severity: string) {
+    return await this.prisma.alertSeverity.findUnique({
+      where: {
+        severity,
+      },
+    });
+  }
+  async getAlertsCountBySeverity(id: number) {
+    return await this.prisma.alert.findMany({
+      where: {
+        alertSeverityId: id,
+      },
+    });
+  }
+  async getUserByEmail(email: string) {
+    try {
+      return await this.prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error fetching user by email');
+    }
+  }
+
+  async getAlerts(id: number) {
+    return await this.prisma.alert.findMany({
+      where: {
+        alertTypeId: id,
+      },
+      include: {
+        alertSeverity: true,
+      },
+    });
+  }
+
+  async getAlertType(type: string) {
+    return await this.prisma.alertType.findUnique({
+      where: {
+        tipo: type,
+      },
+    });
+  }
+
+  async getPlant(name: string) {
+    return await this.prisma.plant.findUnique({
+      where: {
+        name,
+      },
+    });
+  }
+
+  async deletePlant(id: number) {
+    await this.prisma.plant.delete({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  async getAlertTypes() {
+    return await this.prisma.alertType.findMany();
+  }
+
+  async deleteAlert(id: number) {
+    await this.prisma.alert.deleteMany({
+      where: {
+        plantId: id,
+      },
+    });
+  }
+  async getPlantsWithAlerts() {
+    return await this.prisma.plant.findMany({
+      include: {
+        alerts: {
+          include: {
+            alertSeverity: true,
+          },
+        },
+      },
+    });
+  }
+
+  async createPlant(name: string, country: string) {
+    try {
+      return await this.prisma.plant.create({
+        data: {
+          name,
+          country,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error creating plant');
+    }
+  }
+
+  async createAlert(
+    plantId: number,
+    alertTypeId: number,
+    alertSeverityId: number,
+  ) {
+    try {
+      return await this.prisma.alert.create({
+        data: {
+          plantId,
+          alertTypeId,
+          alertSeverityId,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error creating alert');
+    }
+  }
 }
