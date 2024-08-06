@@ -4,7 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class HomeController {
   @Get()
   getHomePage(): string {
-    console.log("Pasa por el getHomePage")
     return `
 <html>
       <body>

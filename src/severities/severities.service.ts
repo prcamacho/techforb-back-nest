@@ -32,7 +32,6 @@ export class SeveritysService {
   async getAlertsBySeverity(severity: string) {
     try {
       const alertSeverity = await this.prisma.getAlertSeverity(severity);
-
       if (!alertSeverity) {
         throw new Error(`Severidad de alerta "${severity}" no encontrada`);
       }
@@ -40,7 +39,6 @@ export class SeveritysService {
       const alerts = await this.prisma.getAlertsCountBySeverity(
         alertSeverity.id,
       );
-
       return alerts;
     } catch (error) {
       throw new Error('Ocurrió un error al recuperar las alertas');

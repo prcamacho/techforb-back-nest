@@ -11,11 +11,11 @@ import { SeverityDto } from './dto/severity.dto';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { GetAlertsDto } from './dto/get-alerts.dto';
 
-@Controller('alerts')
+@Controller()
 export class SeveritysController {
   constructor(private readonly severitysService: SeveritysService) {}
 
-  @Get(':type')
+  @Get('alerts/:type')
   async getAlertsByType(@Param() getAlertsDto: GetAlertsDto) {
     try {
       const severityCounts = await this.severitysService.getAlertsByType(
@@ -30,13 +30,13 @@ export class SeveritysController {
     }
   }
 
-  @Get('severity/:severity')
+  @Get('alerts/severity/:severity')
   async getAlertsBySeverity(@Param() severityDto: SeverityDto) {
     const { severity } = severityDto;
     return this.severitysService.getAlertsBySeverity(severity);
   }
 
-  @Post('create')
+  @Post('createAlerts')
   async createAlerts(@Body() createAlertDto: CreateAlertDto) {
     return this.severitysService.createAlerts(createAlertDto);
   }
