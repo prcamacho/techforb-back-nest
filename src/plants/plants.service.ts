@@ -22,7 +22,6 @@ export class PlantsService {
   async getPlantAlerts(): Promise<PlantAlert[]> {
     try {
       const plants = await this.prisma.getPlantsWithAlerts();
-
       const plantAlerts = plants.map((plant) => {
         const severityCounts = plant.alerts.reduce(
           (counts: Record<string, number>, alert) => {

@@ -1,14 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { User } from '../interfaces/user.interface';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class PrismaService {
+export class PrismaService extends PrismaClient implements OnModuleInit {
   private readonly prisma: PrismaClient;
 
   constructor() {
+    super();
     this.prisma = new PrismaClient();
+  }
+
+  async onModuleInit() {
+    try {
+      await this.$connect();
+      console.log('Conexión a la base de datos establecida con éxito');
+    } catch (error) {
+      console.error('Error al conectar a la base de datos:', error);
+    }
   }
 
   async createUser(userData: {
@@ -49,14 +59,14 @@ export class PrismaService {
     });
   }
   async getAlertSeverity(severity: string) {
-    return await this.prisma.alertSeverity.findUnique({
+    return this.prisma.alertSeverity.findUnique({
       where: {
         severity,
       },
     });
   }
   async getAlertsCountBySeverity(id: number) {
-    return await this.prisma.alert.findMany({
+    return this.prisma.alert.findMany({
       where: {
         alertSeverityId: id,
       },
@@ -64,7 +74,7 @@ export class PrismaService {
   }
   async getUserByEmail(email: string) {
     try {
-      return await this.prisma.user.findUnique({
+      return this.prisma.user.findUnique({
         where: {
           email,
         },
@@ -75,7 +85,7 @@ export class PrismaService {
   }
 
   async getAlerts(id: number) {
-    return await this.prisma.alert.findMany({
+    return this.prisma.alert.findMany({
       where: {
         alertTypeId: id,
       },
@@ -86,7 +96,7 @@ export class PrismaService {
   }
 
   async getAlertType(type: string) {
-    return await this.prisma.alertType.findUnique({
+    return this.prisma.alertType.findUnique({
       where: {
         tipo: type,
       },
@@ -94,7 +104,7 @@ export class PrismaService {
   }
 
   async getPlant(name: string) {
-    return await this.prisma.plant.findUnique({
+    return this.prisma.plant.findUnique({
       where: {
         name,
       },
@@ -110,7 +120,7 @@ export class PrismaService {
   }
 
   async getAlertTypes() {
-    return await this.prisma.alertType.findMany();
+    return this.prisma.alertType.findMany();
   }
 
   async deleteAlert(id: number) {
@@ -121,7 +131,7 @@ export class PrismaService {
     });
   }
   async getPlantsWithAlerts() {
-    return await this.prisma.plant.findMany({
+    return this.prisma.plant.findMany({
       include: {
         alerts: {
           include: {
