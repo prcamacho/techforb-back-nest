@@ -4,6 +4,7 @@ import { AuthController } from './users/auth/auth.controller';
 import { PlantsModule } from './plants/plants.module';
 import { SeveritysModule } from './severities/severities.module';
 import { AuthModule } from './users/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [UsersModule, PlantsModule, SeveritysModule,AuthModule],
